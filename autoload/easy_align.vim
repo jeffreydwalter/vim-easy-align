@@ -578,9 +578,18 @@ function! s:do_align(todo, modes, all_tokens, all_delims, fl, ll, fc, lc, nth, r
       endif
     endif
 
-    " Align the token
     let aligned = join([lpad, token, ml, dl, delim, dr, mr, rpad], '')
-    let tokens[nth] = aligned
+
+    " TODO: Integrate 'tab_align' this as an actual option.
+    let tpad_len = 0
+    "if d.tabstop_align
+        let aligned_len = len(aligned)
+        if aligned_len > &tabstop
+            let tpad_len = &tabstop - ((aligned_len) % &tabstop)
+        endif
+    "endif
+
+   	let tokens[nth] = join([aligned, repeat(' ', tpad_len)], '')
 
     " Update the line
     let a:todo[line] = before.join(tokens, '').after
